@@ -19,9 +19,9 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
 
     }
 
-    final private static int DEFAULT_CAPACITY = 16;
-    final private static float LOAD_FACTOR = 0.75f;
-    final private static int ARRAY_RESIZE_INCREMENT = 2;
+    private static final int DEFAULT_CAPACITY = 16;
+    private static final float LOAD_FACTOR = 0.75f;
+    private static final int ARRAY_RESIZE_INCREMENT = 2;
     private int currentSize = 0;
     Node<K, V>[] table = new Node[DEFAULT_CAPACITY];
 
@@ -41,31 +41,31 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
         }
 
         int index = calculateIndex(key);
-        Node<K, V> node = new Node(Objects.hash(key), key, value, null);
+        Node<K, V> newNode = new Node(Objects.hash(key), key, value, null);
 
         // If bucket is empty we put a new Node in it
         if (table[index]==null){
-            table[index] = node;
+            table[index] = newNode;
         }
         // If bucket isn't empty we check all linked list and
         // select the appropriate bucket
         else{
-            Node<K, V> temp = table[index];
-            while (temp.next != null){
-                if (Objects.equals(temp.key, key)) {
-                    temp.value = value;
+            Node<K, V> temporaryNode = table[index];
+            while (temporaryNode.next != null){
+                if (Objects.equals(temporaryNode.key, key)) {
+                    temporaryNode.value = value;
                     return;
                 }
-                temp = temp.next;
+                temporaryNode = temporaryNode.next;
             }
-            if (Objects.equals(temp.key, key)) {
-                temp.value = value;
+            if (Objects.equals(temporaryNode.key, key)) {
+                temporaryNode.value = value;
                 return;
             }
-            temp.next = node;
+            temporaryNode.next = newNode;
         }
 
-        currentSize+=1;
+        currentSize++;
 
     }
     @Override
@@ -74,11 +74,11 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
         V result = null;
 
         int index = calculateIndex(key);
-        Node<K, V> temp = table[index];
+        Node<K, V> temporaryNode = table[index];
 
-        while (temp!=null){
-            if (Objects.equals(temp.key, key)) result = temp.value;
-            temp = temp.next;
+        while (temporaryNode!=null){
+            if (Objects.equals(temporaryNode.key, key)) result = temporaryNode.value;
+            temporaryNode = temporaryNode.next;
         }
 
         return result;
@@ -105,12 +105,12 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
 
             if (node != null && node.next != null) {
 
-                Node<K, V> temp = node.next;
+                Node<K, V> temporaryNode = node.next;
 
-                while (temp != null) {
-                    put(temp.key, temp.value);
+                while (temporaryNode != null) {
+                    put(temporaryNode.key, temporaryNode.value);
                     currentSize -= 1;
-                    temp = temp.next;
+                    temporaryNode = temporaryNode.next;
                 }
             }
         }
